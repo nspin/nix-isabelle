@@ -1,0 +1,29 @@
+Only in source/: _build
+Only in source/: nunchaku.native
+Only in source/: setup.data
+Only in source/: setup.exe
+Only in source/: setup.log
+Only in source/src/main: const.ml
+diff -ur x/source/src/transformations/Monomorphization.ml source/src/transformations/Monomorphization.ml
+--- x/source/src/transformations/Monomorphization.ml	1970-01-01 00:00:01.000000000 +0000
++++ source/src/transformations/Monomorphization.ml	2019-06-22 11:25:39.782731994 +0000
+@@ -577,7 +577,9 @@
+ (** {6 Decoding} *)
+ 
+ let unmangle_term ~(state:unmangle_state) (t:term):term =
+-  let rec aux t = match T.repr t with
++  let rec aux t =
++    let aux_var = Var.update_ty ~f:aux in
++    match T.repr t with
+     | TI.Var v -> U.var (aux_var v)
+     | TI.Const id ->
+       begin try
+@@ -598,7 +600,7 @@
+     | TI.TyBuiltin b -> U.ty_builtin b
+     | TI.TyArrow (a,b) -> U.ty_arrow (aux a) (aux b)
+     | TI.Bind (Binder.TyForall, _,_) | TI.TyMeta _ -> assert false
+-  and aux_var = Var.update_ty ~f:aux in
++  in
+   aux t
+ 
+ (* rewrite mangled constants to their definition *)

@@ -1,0 +1,28 @@
+--- a/lib/scripts/isabelle-platform
++++ b/lib/scripts/isabelle-platform
+@@ -20,6 +20,9 @@
+         ISABELLE_PLATFORM32=x86-linux
+         ISABELLE_PLATFORM64=x86_64-linux
+         ;;
++      aarch64)
++        ISABELLE_PLATFORM64=aarch64-linux
++        ;;
+     esac
+     ;;
+   Darwin)
+--- a/src/Pure/System/platform.scala
++++ b/src/Pure/System/platform.scala
+@@ -38,11 +38,13 @@
+ 
+   private val X86 = """i.86|x86""".r
+   private val X86_64 = """amd64|x86_64""".r
++  private val AArch64 = """arm64|aarch64""".r
+ 
+   def cpu_arch: String =
+     System.getProperty("os.arch", "") match {
+       case X86() => "x86"
+       case X86_64() => "x86_64"
++      case AArch64() => "aarch64"
+       case _ => error("Failed to determine CPU architecture")
+     }
+ 

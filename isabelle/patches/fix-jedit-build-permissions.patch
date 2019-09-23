@@ -1,0 +1,13 @@
+diff --git a/src/Tools/jEdit/lib/Tools/jedit b/src/Tools/jEdit/lib/Tools/jedit
+index 8746f2e69e..a51ab2acc3 100755
+--- a/src/Tools/jEdit/lib/Tools/jedit
++++ b/src/Tools/jEdit/lib/Tools/jedit
+@@ -370,6 +373,7 @@ then
+   mkdir -p dist || failed
+ 
+-  cp -p -R -f "$ISABELLE_JEDIT_BUILD_HOME/contrib/$ISABELLE_JEDIT_BUILD_VERSION/." dist/.
++  cp -p -RL -f "$ISABELLE_JEDIT_BUILD_HOME/contrib/$ISABELLE_JEDIT_BUILD_VERSION/." dist/.
++  chmod -R +w dist
+ 
+   init_resources "${RESOURCES_BASE[@]}"
+   compile_sources "${SOURCES_BASE[@]}"

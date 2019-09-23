@@ -1,0 +1,8 @@
+Code2HTML-0.7
+Console-5.1.4
+Highlight-2.2
+Navigator-2.7
+CommonControls-1.7.4
+ErrorList-2.3
+MacOSX-1.3
+SideKick-1.8
