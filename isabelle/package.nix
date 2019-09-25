@@ -70,6 +70,7 @@ let
 
     patches = [
       ./patches/fix-jedit-build-permissions.patch
+      ./patches/rw-mirabelle-example.patch
     ] ++ lib.optionals (hostPlatform.isAarch64) [
       ./patches/add-platform-aarch64.patch
     ];
@@ -81,7 +82,7 @@ let
     unpackPhase = ''
       cp -r $src $out
       chmod -R u+w $out
-      cd $out
+      sourceRoot=$out
     '';
 
     postPatch = ''
@@ -89,11 +90,12 @@ let
 
       find . -type f -exec sed -i 's|/usr/bin/env|${coreutils}/bin/env|g' {} ';'
 
+      cp ${./patches/smt-example-certs}/* src/HOL/SMT_Examples
+
       substituteInPlace etc/options \
         --replace \
           'public option ML_system_64 : bool = false' \
           'public option ML_system_64 : bool = true'
-    '' + lib.optionalString (hostPlatform.isAarch64) ''
       substituteInPlace etc/options \
         --replace \
           'option timeout : real = 0'  \
@@ -107,7 +109,7 @@ let
           'smt_timeout = 20' \
           'smt_timeout = 1048576'
     '';
-
+    # '' + lib.optionalString (hostPlatform.isAarch64) ''
 
     configurePhase = ''
       echo ${metaComponent} >> etc/components
@@ -121,10 +123,6 @@ let
       # (see Admin/jenkins/run_build)
       # ./bin/isabelle ocaml_setup
       # ./bin/isabelle ghc_setup
-  };
-
-  tests = callPackage ./tests {
-    inherit isabelle;
   };
 
   isabelle = runCommand "isabelle-2019-bin" {

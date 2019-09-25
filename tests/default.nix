@@ -24,22 +24,32 @@ let
     touch $out
   '';
 
+  build = "isabelle build";
+  # build = "isabelle build -v";
+  # build = "isabelle build -j $NIX_BUILD_CORES";
+
 in {
 
+  inherit afp_src;
+
   lib = mkSimpleTest "lib" ''
-    isabelle build -j $NIX_BUILD_CORES -a
+    ${build} -a
   '';
 
   libs = sessions: mkSimpleTest "libs" ''
-    isabelle build -j $NIX_BUILD_CORES ${lib.concatStringsSep " " sessions}
+    ${build} ${lib.concatStringsSep " " sessions}
+  '';
+
+  libx = sessions: mkSimpleTest "libx" ''
+    ${build} -a ${lib.concatMapStringsSep " " (x: "-x ${x}") sessions}
   '';
 
   afp = mkSimpleTest "afp" ''
-    isabelle build -j $NIX_BUILD_CORES -d ${afp_src}/thys -g AFP
+    ${build} -d ${afp_src}/thys -g AFP
   '';
 
   afps = sessions: mkSimpleTest "afps" ''
-    isabelle build -j $NIX_BUILD_CORES -d ${afp_src}/thys ${lib.concatStringsSep " " sessions}
+    ${build} -d ${afp_src}/thys ${lib.concatStringsSep " " sessions}
   '';
 
 }

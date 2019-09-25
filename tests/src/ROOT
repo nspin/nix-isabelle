@@ -1,0 +1,5 @@
+chapter Test
+
+session Test = Main +
+  theories
+    Test

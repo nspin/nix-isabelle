@@ -9,8 +9,17 @@ let
     };
   };
 
+  tests = pkgs.callPackage ./tests {};
+
 in rec {
   inherit pkgs;
   inherit (pkgs) isabelle;
-  inherit (isabelle) components tests;
+  inherit (isabelle) components prebuiltComponents;
+
+  inherit tests;
+
+   pass = assert pkgs.hostPlatform.system == "x86_64-linux"; tests.libx [
+     "HOL-Metis_Examples"
+   ];
+
 }

@@ -6,7 +6,7 @@ let
   polyml = callPackage ./polyml.nix {};
   sha1 = callPackage ./sha1.nix {};
 
-  home = runCommand "ml-home" {} ''
+  ml_home = runCommand "ml-home" {} ''
     mkdir $out
     ln -s ${polyml}/bin/* $out
     ln -s ${polyml}/lib/* $out
@@ -23,13 +23,19 @@ let
     '';
   };
 
+  polyml_home = runCommand "polyml-home" {} ''
+    mkdir $out
+    touch $out/README
+  '';
+
 in
 mkComponent {
   inherit (polyml) name;
   settings = ''
+    POLYML_HOME=${polyml_home}
     ML_PLATFORM=${hostPlatform.config}
     ML_SYSTEM=${polyml.name}
-    ML_HOME=${home}
+    ML_HOME=${ml_home}
     ML_SOURCES=${source}
     ML_OPTIONS="--minheap 1000"
   '';
