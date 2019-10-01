@@ -18,7 +18,7 @@ in rec {
 
   inherit tests;
 
-   pass = assert pkgs.hostPlatform.system == "x86_64-linux"; tests.libx [
+   pass = assert pkgs.hostPlatform.isx86_64; tests.libx [
      "HOL-Metis_Examples"
    ];
 
