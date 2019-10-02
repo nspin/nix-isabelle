@@ -1,5 +1,9 @@
-{ mkComponent, spass }:
+{ mkComponent, callPackage }:
 
+let
+  spass = callPackage ./spass.nix {};
+
+in
 mkComponent {
   inherit (spass) name;
   settings = ''

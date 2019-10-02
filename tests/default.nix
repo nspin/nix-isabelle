@@ -10,7 +10,7 @@ let
     sha256 = "0mpg0ks4h666vi65xvrxvq1zx7j3mrffw80r963hp5s1i9vhf9b8";
   };
 
-  mkSimpleTest = name: cmd: runCommand "isabelle-test-${name}" {
+  mk_simple_test = name: cmd: runCommand "isabelle-test-${name}" {
     nativeBuildInputs = [
       isabelle
       perl hostname unzip
@@ -24,31 +24,29 @@ let
     touch $out
   '';
 
-  build = "isabelle build";
-  # build = "isabelle build -v";
-  # build = "isabelle build -j $NIX_BUILD_CORES";
+  build = "isabelle build"; # -v -j $NIX_BUILD_CORES
 
 in {
 
-  inherit afp_src;
+  inherit mk_simple_test afp_src;
 
-  lib = mkSimpleTest "lib" ''
+  lib = mk_simple_test "lib" ''
     ${build} -a
   '';
 
-  libs = sessions: mkSimpleTest "libs" ''
+  libs = sessions: mk_simple_test "libs" ''
     ${build} ${lib.concatStringsSep " " sessions}
   '';
 
-  libx = sessions: mkSimpleTest "libx" ''
+  libx = sessions: mk_simple_test "libx" ''
     ${build} -a ${lib.concatMapStringsSep " " (x: "-x ${x}") sessions}
   '';
 
-  afp = mkSimpleTest "afp" ''
+  afp = mk_simple_test "afp" ''
     ${build} -d ${afp_src}/thys -g AFP
   '';
 
-  afps = sessions: mkSimpleTest "afps" ''
+  afps = sessions: mk_simple_test "afps" ''
     ${build} -d ${afp_src}/thys ${lib.concatStringsSep " " sessions}
   '';
 
