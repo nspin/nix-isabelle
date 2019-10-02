@@ -1,7 +1,9 @@
-{ mkComponent, callPackage }:
+{ mkComponent, callPackage, gccStdenv }:
 
 let
-  spass = callPackage ./spass.nix {};
+  spass = callPackage ./spass.nix {
+    stdenv = gccStdenv;
+  };
 
 in
 mkComponent {
