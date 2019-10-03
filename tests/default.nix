@@ -1,6 +1,7 @@
-{ lib, runCommandCC, writeText, fetchhg
+{ lib, hostPlatform, runCommandCC, writeText, mkShell, fetchhg
 , haskell, ocamlPackages, gmp
-, perl, hostname, unzip
+, perl, hostname, unzip, gnum4
+, darwin, xcbuild
 , isabelle
 }:
 
@@ -13,17 +14,16 @@ let
 
   preferences = writeText "preferences" ''
     ML_system_64 = true
-    timeout = 1048576
-    timeout_scale = 1048576.0
-    smt_timeout = 1048576
   '';
+    # timeout = 1048576
+    # timeout_scale = 1048576.0
+    # smt_timeout = 1048576
 
   mk_simple_test = name: cmd: runCommandCC "isabelle-test-${name}" {
     nativeBuildInputs = [
       isabelle
       perl hostname unzip
-      ocamlPackages.ocaml
-      gmp
+      ocamlPackages.ocaml gmp
     ];
   } ''
     export HOME=$NIX_BUILD_TOP/home
@@ -68,5 +68,31 @@ in {
   afps = sessions: mk_simple_test "afps" ''
     ${build} -d ${afp_src}/thys ${lib.concatStringsSep " " sessions}
   '';
+
+  shell = mkShell {
+    nativeBuildInputs = [
+      perl hostname unzip gnum4
+      isabelle
+    ] ++ lib.optionals hostPlatform.isDarwin [
+      xcbuild
+    ];
+    buildInputs = [
+     gmp
+    ] ++ lib.optionals hostPlatform.isDarwin [
+      darwin.libiconv
+    ];
+    shellHook = ''
+      afp=${afp_src}/thys
+      setup() {
+        isabelle_home_user=$(isabelle env bash -c 'echo $ISABELLE_HOME_USER')
+        mkdir -p $isabelle_home_user/etc
+        ln -s ${preferences} $isabelle_home_user/etc/preferences
+      }
+    '';
+      # clean() {
+      # }
+      # isabelle ghc_setup
+      # isabelle ocaml_setup
+  };
 
 }
