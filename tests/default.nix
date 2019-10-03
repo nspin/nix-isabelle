@@ -1,4 +1,5 @@
-{ runCommand, lib, fetchhg
+{ runCommandCC, lib, fetchhg
+, ocamlPackages, gmp
 , perl, hostname, unzip
 , isabelle
 }:
@@ -10,14 +11,18 @@ let
     sha256 = "0mpg0ks4h666vi65xvrxvq1zx7j3mrffw80r963hp5s1i9vhf9b8";
   };
 
-  mk_simple_test = name: cmd: runCommand "isabelle-test-${name}" {
+  mk_simple_test = name: cmd: runCommandCC "isabelle-test-${name}" {
     nativeBuildInputs = [
       isabelle
       perl hostname unzip
+      ocamlPackages.ocaml
+      gmp
     ];
   } ''
     export HOME=$NIX_BUILD_TOP/home
     mkdir $HOME
+
+    export OCAMLPATH=${ocamlPackages.zarith}/lib/ocaml/${ocamlPackages.ocaml.version}/site-lib
 
     ${cmd}
 
