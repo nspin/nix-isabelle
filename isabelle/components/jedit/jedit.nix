@@ -1,5 +1,5 @@
 { stdenv, callPackage, fetchurl, ant, jdk, commonsBsf, commonsLogging, bsh
-, isabelle-src, bcpg, jsr305
+, isabelle_src, bcpg, jsr305
 }:
 
 stdenv.mkDerivation rec{
@@ -22,7 +22,7 @@ stdenv.mkDerivation rec{
 
   prePatch = ''
     mkdir patches
-    cp ${isabelle-src}/src/Tools/jEdit/patches/* patches
+    cp ${isabelle_src}/src/Tools/jEdit/patches/* patches
     for patch in patches/*; do
       if [ $patch = patches/macosx ]; then
         :

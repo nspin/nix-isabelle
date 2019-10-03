@@ -1,5 +1,5 @@
-{ runCommandCC, lib, fetchhg
-, ocamlPackages, gmp
+{ lib, runCommandCC, writeText, fetchhg
+, haskell, ocamlPackages, gmp
 , perl, hostname, unzip
 , isabelle
 }:
@@ -10,6 +10,13 @@ let
     rev = "1c0ae055c848bf7ad7bcb8fb6a22fda3568de793";
     sha256 = "0mpg0ks4h666vi65xvrxvq1zx7j3mrffw80r963hp5s1i9vhf9b8";
   };
+
+  preferences = writeText "preferences" ''
+    ML_system_64 = true
+    timeout = 1048576
+    timeout_scale = 1048576.0
+    smt_timeout = 1048576
+  '';
 
   mk_simple_test = name: cmd: runCommandCC "isabelle-test-${name}" {
     nativeBuildInputs = [
@@ -23,6 +30,13 @@ let
     mkdir $HOME
 
     export OCAMLPATH=${ocamlPackages.zarith}/lib/ocaml/${ocamlPackages.ocaml.version}/site-lib
+    export ISABELLE_OCAMLFIND=${ocamlPackages.findlib}/bin/ocamlfind
+    # matches ISABELLE_GHC_VERSION=ghc-8.4.4
+    export ISABELLE_GHC=${haskell.packages.ghc844.ghc}/bin/ghc
+
+    isabelle_home_user=$(isabelle env bash -c 'echo $ISABELLE_HOME_USER')
+    mkdir -p $isabelle_home_user/etc
+    ln -s ${preferences} $isabelle_home_user/etc/preferences
 
     ${cmd}
 

@@ -1,75 +1,73 @@
-{ stdenv, lib, hostPlatform, callPackage, fetchhg, writeText, runCommand
+{ stdenv, lib, hostPlatform, callPackage, callPackages, newScope
+, writeText, runCommand, fetchurl, fetchhg
 , perl, coreutils
+, rlwrap, mlton, smlnj, swiProlog
 }:
-
-with lib;
 
 let
 
-  src = fetchhg {
+  isabelle_src = fetchhg {
     url = "https://isabelle.in.tum.de/repos/isabelle";
     rev = "Isabelle2019";
     sha256 = "0pwlc72dcyx4k1gi57xgwlakc3zhd8kfgk9inap73brxy2lbhx34";
   };
 
-  components = callPackage ./components {
-    isabelle-src = src;
+  mkComponent = { name, settings ? null, options ? null, components ? null, passthru ? {} }:
+    runCommand "isabelle-component-${name}" {
+      inherit passthru;
+    } (''
+      mkdir -p $out/etc
+    '' + lib.optionalString (settings != null) ''
+      ln -s ${writeText "settings" settings} $out/etc/settings
+    '' + lib.optionalString (options != null) ''
+      ln -s ${writeText "options" options} $out/etc/options
+    '' + lib.optionalString (components != null) ''
+      ln -s ${writeText "components" (lib.concatMapStrings (x: ''
+        ${x}
+      '') components)} $out/etc/components
+    '');
+
+  mkPrebuiltComponent = name: sha256:
+    let
+      tarball = fetchurl {
+        url = "https://isabelle.in.tum.de/components/${name}.tar.gz";
+        inherit sha256;
+      };
+    in runCommand "isabelle-prebuilt-${name}" {} ''
+      tar -xzf ${tarball}
+      mv ${name} $out
+    '';
+
+  components =
+    # lib.makeScope doesn't add 'callPackages' and we want a raw attrset
+    let
+      scope = lib.makeScope newScope (self: {
+        inherit mkComponent isabelle_src;
+      });
+    in import ./components {
+      inherit (scope) callPackage;
+    };
+
+  prebuiltComponents = callPackages ./prebuilt-components {
+    inherit mkPrebuiltComponent;
   };
 
-  prebuiltComponents = callPackage ./prebuilt-components {};
-  getPrebuiltComponents = names: attrValues (getAttrs names prebuiltComponents);
-
-  metaComponent = components.mkComponent {
+  metaComponent = mkComponent {
     name = "meta";
-    components = getPrebuiltComponents [
-
-      # Just data
-      "hol-light-bundle-0.5-126"
-
-      # Just fonts
-      "isabelle_fonts-20190409"
-
-      # Just perl scripts and data, but with shebangs
-      "bib2xhtml-20190409"
-
-      # Pure Java
-      "jfreechart-1.5.0"
-      "jortho-1.0-2"
-      "postgresql-42.2.5"
-      "ssh-java-20190323"
-      "xz-java-1.8"
-
-    ] ++ (with components; [
-
-      jdk
-      scala
-      polyml
-
-      csdp
-      cvc4
-      eprover
-      nunchaku
-      kodkodi
-      smbc
-      spass
-      z3
-      vampire
-
-      jedit
-
-      sqlite-jdbc
-
-      bash-process
-
-      misc
-
-    ]);
+    components = lib.attrValues (prebuiltComponents // components);
+    settings = ''
+      ISABELLE_LINE_EDITOR=${rlwrap}/bin/rlwrap
+      ISABELLE_MLTON=${mlton}/bin/mlton
+    '' + lib.optionalString hostPlatform.isLinux ''
+      ISABELLE_SMLNJ=${smlnj}/bin/sml
+      ISABELLE_SWIPL=${swiProlog}/bin/swipl
+    '';
   };
 
   home = stdenv.mkDerivation {
     pname = "isabelle";
     version = "2019";
-    inherit src;
+    src = isabelle_src;
 
     patches = [
       ./patches/fix-jedit-build-permissions.patch
@@ -94,26 +92,7 @@ let
       find . -type f -exec sed -i 's|/usr/bin/env|${coreutils}/bin/env|g' {} ';'
 
       cp ${./patches/smt-example-certs}/* src/HOL/SMT_Examples
-
-      substituteInPlace etc/options \
-        --replace \
-          'public option ML_system_64 : bool = false' \
-          'public option ML_system_64 : bool = true'
-
-      substituteInPlace etc/options \
-        --replace \
-          'option timeout : real = 0'  \
-          'option timeout : real = 1048576' \
-        --replace \
-          'option timeout_scale : real = 1.0' \
-          'option timeout_scale : real = 1048576.0'
-
-      substituteInPlace src/HOL/SMT.thy \
-        --replace \
-          'smt_timeout = 20' \
-          'smt_timeout = 1048576'
     '';
-    # '' + lib.optionalString (hostPlatform.isAarch64) ''
 
     configurePhase = ''
       echo ${metaComponent} >> etc/components
@@ -124,15 +103,11 @@ let
       ./Admin/build all
       ./bin/isabelle jedit -b
     '';
-      # TODO
-      # (see Admin/jenkins/run_build)
-      # ./bin/isabelle ocaml_setup
-      # ./bin/isabelle ghc_setup
   };
 
   isabelle = runCommand "isabelle-2019-bin" {
     passthru = {
-      inherit home components prebuiltComponents tests;
+      inherit home components prebuiltComponents mkComponent mkPrebuiltComponent;
     };
   } ''
     mkdir -p $out/bin
