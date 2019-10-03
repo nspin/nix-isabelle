@@ -23,11 +23,14 @@ let
     name = "meta";
     components = getPrebuiltComponents [
 
-      # Just perl scripts and data, but with shebangs
-      "bib2xhtml-20190409"
+      # Just data
+      "hol-light-bundle-0.5-126"
 
       # Just fonts
       "isabelle_fonts-20190409"
+
+      # Just perl scripts and data, but with shebangs
+      "bib2xhtml-20190409"
 
       # Pure Java
       "jfreechart-1.5.0"
@@ -96,6 +99,7 @@ let
         --replace \
           'public option ML_system_64 : bool = false' \
           'public option ML_system_64 : bool = true'
+
       substituteInPlace etc/options \
         --replace \
           'option timeout : real = 0'  \
@@ -120,6 +124,7 @@ let
       ./Admin/build all
       ./bin/isabelle jedit -b
     '';
+      # TODO
       # (see Admin/jenkins/run_build)
       # ./bin/isabelle ocaml_setup
       # ./bin/isabelle ghc_setup

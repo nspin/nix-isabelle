@@ -9,20 +9,13 @@ let
 
   kodkodi = callPackage ./kodkodi.nix {};
 
-  # sat4j = fetchurl {
-  #   url = "http://download.forge.ow2.org/sat4j/sat4j-core-v20130525.zip";
-  #   sha256 = "1615hh10m19q3pkm21y0v7k42qvc1mza0q03ws4vn0vfhgjfg8p9";
-  # };
-
+  # TODO is all this necessary?
   bin = writeScriptBin "kodkodi" ''
     #!${runtimeShell}
     export CLASSPATH="$KODKODI_CLASSPATH:$CLASSPATH"
     export JAVA_LIBRARY_PATH="$KODKODI_JAVA_LIBRARY_PATH:$JAVA_LIBRARY_PATH"
 
     case "$ML_PLATFORM" in
-      *-cygwin)
-        export PATH="$KODKODI_JAVA_LIBRARY_PATH:$PATH"
-        ;;
       *-linux)
         export LD_LIBRARY_PATH="$KODKODI_JAVA_LIBRARY_PATH:$LD_LIBRARY_PATH"
         ;;
