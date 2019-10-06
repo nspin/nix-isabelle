@@ -8,8 +8,6 @@ Packaging from source has allowed me to run Isabelle on aarch64. Doing so is not
 
 ### Getting Started
 
-Ensure the Nix package manager is installed.
-
 ```
 $ nix-build -A isabelle
 $ ./result/bin/isabelle
@@ -17,8 +15,10 @@ $ ./result/bin/isabelle
 
 ### Status
 
-This package seems to be working on `x86_64-linux`, `aarch64-linux`(!), and `x86_64-darwin`. I plan on testing it on `x86_64-freebsd` as well.
+I've built all of [Archive of Formal Proofs](https://www.isa-afp.org/) except for three sessions (`Native_Word` due to lack of memory, and `Projective_Geometry` and `Iptables_Semantics_Examples_Big` for unknown reasons) on x86_64-linux using this package. I've also built all sessions that ship with Isabelle on x86_64-darwin using this package. I expect AFP would build on Darwin with equal success as on Linux, but I haven't yet had the chance to test it.
 
-I've yet to successfully build the entire Isabelle standard library and [Archive of Formal Proofs](https://www.isa-afp.org/). That's what I'm working on now.
+Success on `aarch64-linux` has been limited by some components' imited support for `aarch64`.  Perhaps most importantly, it seems that PolyML's codegen for aarch64 may not have received the same optimization treatment as that for x86. Also, versions of Z3 ranging from 4.4.0 to 4.8.5 (current at time of writing) fail (hang or segfault) on some Isabelle-generated SMT. However, JEdit seems to be working fine.
+
+I have not tested this package on `x86_64-*bsd`. However, it would at the very least be a good starting point for an Isabelle distribution for a BSD.
 
 The Isabelle [expression](https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/science/logic/isabelle/default.nix) in upstream nixpkgs applies `patchelf` to the binary Isabelle distribution. I plan on proposing to replace it with the Isabelle expression in this repository.
