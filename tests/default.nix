@@ -1,4 +1,4 @@
-{ lib, hostPlatform, runCommandCC, writeText, mkShell, fetchhg
+{ stdenv, lib, hostPlatform, runCommandCC, writeText, mkShell, fetchhg
 , haskell, ocamlPackages, gmp
 , perl, hostname, unzip, gnum4
 , darwin, xcbuild
@@ -6,18 +6,29 @@
 }:
 
 let
-  afp_src = fetchhg {
-    url = https://bitbucket.org/isa-afp/afp-2019;
-    rev = "1c0ae055c848bf7ad7bcb8fb6a22fda3568de793";
-    sha256 = "0mpg0ks4h666vi65xvrxvq1zx7j3mrffw80r963hp5s1i9vhf9b8";
+  afp_src = stdenv.mkDerivation {
+    name = "afp-src";
+    src = fetchhg {
+      url = https://bitbucket.org/isa-afp/afp-2019;
+      rev = "1c0ae055c848bf7ad7bcb8fb6a22fda3568de793";
+      sha256 = "0mpg0ks4h666vi65xvrxvq1zx7j3mrffw80r963hp5s1i9vhf9b8";
+    };
+    phases = [ "unpackPhase" "patchPhase" "installPhase" ];
+    patches = [
+      ./patches/afp-export-code.patch
+    ];
+    installPhase = ''
+      mkdir $out
+      mv * $out
+    '';
   };
 
   preferences = writeText "preferences" ''
     ML_system_64 = true
+    smt_timeout = 600
   '';
     # timeout = 1048576
     # timeout_scale = 1048576.0
-    # smt_timeout = 1048576
 
   mk_simple_test = name: cmd: runCommandCC "isabelle-test-${name}" {
     nativeBuildInputs = [

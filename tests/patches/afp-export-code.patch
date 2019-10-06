@@ -1,0 +1,203 @@
+diff -r 1c0ae055c848 thys/BinarySearchTree/BinaryTree.thy
+--- a/thys/BinarySearchTree/BinaryTree.thy	Wed Sep 18 15:23:28 2019 +0200
++++ b/thys/BinarySearchTree/BinaryTree.thy	Sun Oct 06 16:12:12 2019 +0000
+@@ -793,6 +793,6 @@
+ definition "test = tlookup id 4 (remove id 3 (binsert id 4 (binsert id 3 Tip)))"
+ 
+ export_code test
+-  in SML module_name BinaryTree_Code file \<open>BinaryTree_Code.ML\<close>
++  in SML module_name BinaryTree_Code
+ 
+ end
+diff -r 1c0ae055c848 thys/BinarySearchTree/BinaryTree_TacticStyle.thy
+--- a/thys/BinarySearchTree/BinaryTree_TacticStyle.thy	Wed Sep 18 15:23:28 2019 +0200
++++ b/thys/BinarySearchTree/BinaryTree_TacticStyle.thy	Sun Oct 06 16:12:12 2019 +0000
+@@ -147,6 +147,6 @@
+ definition "test = memb 4 (remove (3::nat) (binsert 4 (binsert 3 Tip)))"
+ 
+ export_code test
+-  in SML module_name BinaryTree_TacticStyle_Code file \<open>BinaryTree_TacticStyle_Code.ML\<close>
++  in SML module_name BinaryTree_TacticStyle_Code
+ 
+ end
+diff -r 1c0ae055c848 thys/CAVA_LTL_Modelchecker/CAVA_Impl.thy
+--- a/thys/CAVA_LTL_Modelchecker/CAVA_Impl.thy	Wed Sep 18 15:23:28 2019 +0200
++++ b/thys/CAVA_LTL_Modelchecker/CAVA_Impl.thy	Sun Oct 06 16:12:12 2019 +0000
+@@ -1562,6 +1562,5 @@
+             (* String *)
+             String.explode String.implode
+   in SML
+-  file \<open>code/CAVA_Export.sml\<close>
+ 
+ end
+diff -r 1c0ae055c848 thys/CAVA_LTL_Modelchecker/Examples/Mulog.thy
+--- a/thys/CAVA_LTL_Modelchecker/Examples/Mulog.thy	Wed Sep 18 15:23:28 2019 +0200
++++ b/thys/CAVA_LTL_Modelchecker/Examples/Mulog.thy	Sun Oct 06 16:12:12 2019 +0000
+@@ -338,6 +338,5 @@
+     nat_of_integer
+     in SML
+     module_name Mulog
+-    file "../code/examples/mulog/Mulog_Export.sml"
+ 
+ end
+diff -r 1c0ae055c848 thys/CAVA_LTL_Modelchecker/Nested_DFS/NDFS_SI.thy
+--- a/thys/CAVA_LTL_Modelchecker/Nested_DFS/NDFS_SI.thy	Wed Sep 18 15:23:28 2019 +0200
++++ b/thys/CAVA_LTL_Modelchecker/Nested_DFS/NDFS_SI.thy	Sun Oct 06 16:12:12 2019 +0000
+@@ -1559,6 +1559,5 @@
+   integer_of_nat
+   lasso_ext
+   in SML module_name HPY_new_hash
+-  file \<open>nested_dfs_hash.sml\<close>
+ 
+ end
+diff -r 1c0ae055c848 thys/Depth-First-Search/DFS.thy
+--- a/thys/Depth-First-Search/DFS.thy	Wed Sep 18 15:23:28 2019 +0200
++++ b/thys/Depth-First-Search/DFS.thy	Sun Oct 06 16:12:12 2019 +0000
+@@ -254,6 +254,6 @@
+ 
+ declare [[code abort: "HOL.equal :: node \<Rightarrow> node \<Rightarrow> bool"]]
+ 
+-export_code dfs dfs2 in SML file \<open>dfs.ML\<close>
++export_code dfs dfs2 in SML
+ 
+ end
+diff -r 1c0ae055c848 thys/EdmondsKarp_Maxflow/Edka_Benchmark_Export.thy
+--- a/thys/EdmondsKarp_Maxflow/Edka_Benchmark_Export.thy	Wed Sep 18 15:23:28 2019 +0200
++++ b/thys/EdmondsKarp_Maxflow/Edka_Benchmark_Export.thy	Sun Oct 06 16:12:12 2019 +0000
+@@ -11,7 +11,6 @@
+   compute_flow_val_imp edmonds_karp_val
+   in SML_imp 
+   module_name Fofu 
+-  file \<open>evaluation/fofu-SML/Fofu_Export.sml\<close>  
+ 
+ 
+ end
+diff -r 1c0ae055c848 thys/JinjaThreads/Execute/Java2Jinja.thy
+--- a/thys/JinjaThreads/Execute/Java2Jinja.thy	Wed Sep 18 15:23:28 2019 +0200
++++ b/thys/JinjaThreads/Execute/Java2Jinja.thy	Sun Oct 06 16:12:12 2019 +0000
+@@ -16,7 +16,7 @@
+ definition j_Program :: "addr J_mb cdecl list \<Rightarrow> addr J_prog"
+ where "j_Program = Program"
+ 
+-export_code wf_J_prog' j_Program in SML file \<open>JWellForm.ML\<close> 
++export_code wf_J_prog' j_Program in SML
+ 
+ text \<open>Functions for extracting calls to the native print method\<close>
+ 
+@@ -70,7 +70,6 @@
+   purge case_llist' case_tllist' terminal' llist_of_tllist'
+   thr' shr' heap_toString thread_toString trace_toString
+   in SML
+-  file \<open>J_Execute.ML\<close>
+ 
+ definition j2jvm :: "addr J_prog \<Rightarrow> addr jvm_prog" where "j2jvm = J2JVM"
+ 
+@@ -80,6 +79,5 @@
+   purge case_llist' case_tllist' terminal' llist_of_tllist'
+   thr' shr' heap_toString thread_toString' trace_toString
+   in SML
+-  file \<open>JVM_Execute2.ML\<close>
+ 
+ end
+diff -r 1c0ae055c848 thys/LTL_to_DRA/Impl/Export_Code.thy
+--- a/thys/LTL_to_DRA/Impl/Export_Code.thy	Wed Sep 18 15:23:28 2019 +0200
++++ b/thys/LTL_to_DRA/Impl/Export_Code.thy	Sun Oct 06 16:12:12 2019 +0000
+@@ -126,6 +126,6 @@
+ 
+ \<comment> \<open>Export translator (and also constructors)\<close>
+ export_code true\<^sub>c Iff_ltlc Nop true Abs AList_Mapping.Mapping set ltlc_to_rabin 
+-  in SML module_name LTL file \<open>../Code/LTL_to_DRA_Translator.sml\<close>
++  in SML module_name LTL
+ 
+ end
+diff -r 1c0ae055c848 thys/Promela/Promela.thy
+--- a/thys/Promela/Promela.thy	Wed Sep 18 15:23:28 2019 +0200
++++ b/thys/Promela/Promela.thy	Sun Oct 06 16:12:12 2019 +0000
+@@ -2640,6 +2640,5 @@
+   setUp printProcesses printConfigFromAST nexts_code executable_triv apply_triv 
+   extractLTLs lookupLTL
+   in SML 
+-  file \<open>Promela.sml\<close>
+ 
+ end
+diff -r 1c0ae055c848 thys/Refine_Imperative_HOL/benchmarks/Dijkstra/isabelle/Dijkstra_Benchmark.thy
+--- a/thys/Refine_Imperative_HOL/benchmarks/Dijkstra/isabelle/Dijkstra_Benchmark.thy	Wed Sep 18 15:23:28 2019 +0200
++++ b/thys/Refine_Imperative_HOL/benchmarks/Dijkstra/isabelle/Dijkstra_Benchmark.thy	Sun Oct 06 16:12:12 2019 +0000
+@@ -32,7 +32,6 @@
+ 
+   nat_cr_graph_imp nat_dijkstra_imp 
+   in SML_imp module_name Dijkstra
+-  file \<open>dijkstra_export.sml\<close>
+ 
+ 
+ end
+diff -r 1c0ae055c848 thys/Refine_Imperative_HOL/benchmarks/Heapmap/isabelle/Heapmap_Bench.thy
+--- a/thys/Refine_Imperative_HOL/benchmarks/Heapmap/isabelle/Heapmap_Bench.thy	Wed Sep 18 15:23:28 2019 +0200
++++ b/thys/Refine_Imperative_HOL/benchmarks/Heapmap/isabelle/Heapmap_Bench.thy	Sun Oct 06 16:12:12 2019 +0000
+@@ -97,6 +97,5 @@
+   testsuite ftestsuite
+   nat_of_integer integer_of_nat
+   in SML_imp module_name Heapmap
+-  file \<open>heapmap_export.sml\<close>
+ 
+ end
+diff -r 1c0ae055c848 thys/Refine_Imperative_HOL/benchmarks/NestedDFS/isabelle/NDFS_Benchmark.thy
+--- a/thys/Refine_Imperative_HOL/benchmarks/NestedDFS/isabelle/NDFS_Benchmark.thy	Wed Sep 18 15:23:28 2019 +0200
++++ b/thys/Refine_Imperative_HOL/benchmarks/NestedDFS/isabelle/NDFS_Benchmark.thy	Sun Oct 06 16:12:12 2019 +0000
+@@ -163,7 +163,7 @@
+   fun.fun_ndfs_impl fun.fun_succ_of_list fun.fun_acc_of_list
+   funs.funs_ndfs_impl funs.funs_succ_of_list funs.funs_acc_of_list
+   imp_ndfs_impl imp_ndfs_sz_impl imp_acc_of_list imp_graph_of_list
+-in SML_imp module_name NDFS_Benchmark file \<open>NDFS_Benchmark_export.sml\<close>
++in SML_imp module_name NDFS_Benchmark
+ 
+ ML_val \<open>open Time\<close>
+ end
+diff -r 1c0ae055c848 thys/SPARCv8/SparcModel_MMU/Sparc_Code_Gen.thy
+--- a/thys/SPARCv8/SparcModel_MMU/Sparc_Code_Gen.thy	Wed Sep 18 15:23:28 2019 +0200
++++ b/thys/SPARCv8/SparcModel_MMU/Sparc_Code_Gen.thy	Sun Oct 06 16:12:12 2019 +0000
+@@ -15,6 +15,6 @@
+ export_code init_state0 reset_mode_mod reset_mode_val
+ state_undef
+ seq_exec_leon3 in OCaml
+-module_name Sparc_seq file \<open>sparc_seq\<close>
++module_name Sparc_seq
+ 
+ end
+diff -r 1c0ae055c848 thys/Tree-Automata/Ta_impl_codegen.thy
+--- a/thys/Tree-Automata/Ta_impl_codegen.thy	Wed Sep 18 15:23:28 2019 +0200
++++ b/thys/Tree-Automata/Ta_impl_codegen.thy	Sun Oct 06 16:12:12 2019 +0000
+@@ -36,7 +36,6 @@
+   ls_size hs_size rs_size
+   in SML 
+   module_name Ta
+-  file \<open>code/ml/generated/Ta.ML\<close>
+ 
+ 
+ (* CAUTION: If this statement fails because the directory cannot be found, 
+@@ -61,7 +60,6 @@
+   ls_size hs_size rs_size
+   in Haskell 
+   module_name Ta
+-  file \<open>code/haskell/generated\<close>
+   (string_classes)
+ 
+ (* CAUTION: If this statement fails because the directory cannot be found, 
+@@ -86,6 +84,5 @@
+   ls_size hs_size rs_size
+   in OCaml 
+   module_name Ta
+-  file \<open>code/ocaml/generated/Ta.ml\<close>
+ 
+ end
+diff -r 1c0ae055c848 thys/Vickrey_Clarke_Groves/CombinatorialAuctionCodeExtraction.thy
+--- a/thys/Vickrey_Clarke_Groves/CombinatorialAuctionCodeExtraction.thy	Wed Sep 18 15:23:28 2019 +0200
++++ b/thys/Vickrey_Clarke_Groves/CombinatorialAuctionCodeExtraction.thy	Sun Oct 06 16:12:12 2019 +0000
+@@ -54,7 +54,6 @@
+    necessary for the computation and write it to a file of choice, in this case the file
+    VCG.scala *)
+ export_code vcgaAlg payments allocationPrettyPrint in Scala module_name VCG 
+-            file \<open>VCG-withoutWrapper.scala\<close>
+ 
+ end
+ 
