@@ -6,11 +6,33 @@ This repository contains Nix expressions which package Isabelle and all of its c
 
 Packaging from source has allowed me to run Isabelle on aarch64. Doing so is not officially supported by Isabelle, but required only a tiny [patch](./isabelle/patches/add-platform-aarch64.patch). However, Isabelle on aarch64 is disproportionately slow. I suspect this is due to sub-optimal PolyML codegen.
 
-### Getting Started
+### Usage
 
+Build Isabelle:
 ```
 $ nix-build -A isabelle
-$ ./result/bin/isabelle
+$ ./result/bin/isabelle version
+```
+
+Install Isabelle:
+```
+$ nix-env -f . -iA isabelle
+$ isabelle version
+```
+
+Build the sessions that ship with Isabelle in a sandbox.
+This will skip the `Haskell` session, which uses Stack and cannot be run in a sandbox.
+```
+$ nix-build -A tests.lib
+```
+
+Build AFP within a Nix shell:
+```
+$ nix-shell -A tests.shell
+[nix-shell]$ setup # symlink from $ISABELLE_HOME_USER/etc/preferences (see ./tests/default.nix)
+[nix-shell]$ isabelle ghc_setup
+[nix-shell]$ isabelle ocaml_setup
+[nix-shell]$ isabelle build -d $afp -a
 ```
 
 ### Status
