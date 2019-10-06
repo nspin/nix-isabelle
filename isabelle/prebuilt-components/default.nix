@@ -1,3 +1,3 @@
 { lib, mkPrebuiltComponent }:
 
-lib.mapAttrs mkPrebuiltComponent (import ./hashes.nix)
+lib.mapAttrs (n: v: lib.mapAttrs mkPrebuiltComponent v) (import ./hashes.nix)

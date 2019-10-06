@@ -1,21 +1,21 @@
 { callPackage }:
 
 {
-  jdk = callPackage ./jdk {};
-  scala = callPackage ./scala {};
-  polyml = callPackage ./polyml {};
+  bash-process = callPackage ./bash-process {};
   csdp = callPackage ./csdp {};
   cvc4 = callPackage ./cvc4 {};
   eprover = callPackage ./eprover {};
+  jdk = callPackage ./jdk {};
+  jedit = callPackage ./jedit {};
+  kodkodi = callPackage ./kodkodi {};
   nunchaku = callPackage ./nunchaku {};
+  opam = callPackage ./opam {};
+  polyml = callPackage ./polyml {};
+  scala = callPackage ./scala {};
   smbc = callPackage ./smbc {};
   spass = callPackage ./spass {};
-  z3 = callPackage ./z3 {};
-  vampire = callPackage ./vampire {};
-  jedit = callPackage ./jedit {};
   sqlite-jdbc = callPackage ./sqlite-jdbc {};
-  bash-process = callPackage ./bash-process {};
-  kodkodi = callPackage ./kodkodi {};
   stack = callPackage ./stack {};
-  opam = callPackage ./opam {};
+  vampire = callPackage ./vampire {};
+  z3 = callPackage ./z3 {};
 }

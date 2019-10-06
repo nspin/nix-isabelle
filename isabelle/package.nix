@@ -2,6 +2,8 @@
 , writeText, runCommand, fetchurl, fetchhg
 , perl, coreutils
 , rlwrap, mlton, smlnj, swiProlog
+, extraComponents ? []
+, extraSettings ? ""
 }:
 
 let
@@ -48,20 +50,20 @@ let
       inherit (scope) callPackage;
     };
 
-  prebuiltComponents = callPackages ./prebuilt-components {
+  prebuiltComponents = callPackage ./prebuilt-components {
     inherit mkPrebuiltComponent;
   };
 
   metaComponent = mkComponent {
     name = "meta";
-    components = lib.attrValues (prebuiltComponents // components);
+    components = lib.attrValues (prebuiltComponents.main // components) ++ extraComponents;
     settings = ''
       ISABELLE_LINE_EDITOR=${rlwrap}/bin/rlwrap
       ISABELLE_MLTON=${mlton}/bin/mlton
     '' + lib.optionalString hostPlatform.isLinux ''
       ISABELLE_SMLNJ=${smlnj}/bin/sml
       ISABELLE_SWIPL=${swiProlog}/bin/swipl
-    '';
+    '' + extraSettings;
   };
 
   home = stdenv.mkDerivation {
