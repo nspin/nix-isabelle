@@ -23,13 +23,13 @@ let
     '';
   };
 
-  preferences = writeText "preferences" ''
+  preferences = smt_timeout: writeText "preferences" ''
     ML_system_64 = true
-    smt_timeout = 600
+    smt_timeout = ${toString smt_timeout}
   '';
     # TODO timeout and timeout_scale
 
-  mkSimpleTest = name: cmd: runCommandCC "isabelle-test-${name}" {
+  mkSimpleTest = name: cmd: runCommandCC "isabelle-test" {
     nativeBuildInputs = [
       isabelle
       perl hostname unzip
@@ -46,7 +46,7 @@ let
 
     isabelle_home_user=$(isabelle env bash -c 'echo $ISABELLE_HOME_USER')
     mkdir -p $isabelle_home_user/etc
-    ln -s ${preferences} $isabelle_home_user/etc/preferences
+    ln -s ${preferences 60} $isabelle_home_user/etc/preferences
 
     ${cmd}
 
@@ -63,24 +63,16 @@ in {
     ${build} -a
   '';
 
-  libs = sessions: mkSimpleTest "libs" ''
+  libSessions = sessions: mkSimpleTest ''
     ${build} ${lib.concatStringsSep " " sessions}
   '';
 
-  libx = sessions: mkSimpleTest "libx" ''
+  libWithoutSessions = sessions: mkSimpleTest ''
     ${build} -a ${lib.concatMapStringsSep " " (x: "-x ${x}") sessions}
   '';
 
-  afp = mkSimpleTest "afp" ''
-    ${build} -d ${afp_src}/thys -a
-  '';
-
-  afps = sessions: mkSimpleTest "afps" ''
+  afpSessions = sessions: mkSimpleTest ''
     ${build} -d ${afp_src}/thys ${lib.concatStringsSep " " sessions}
-  '';
-
-  afpx = sessions: mkSimpleTest "afpx" ''
-    ${build} -d ${afp_src}/thys -a ${lib.concatMapStringsSep " " (x: "-x ${x}") sessions}
   '';
 
   shell = mkShell {
@@ -100,7 +92,7 @@ in {
       setup() {
         isabelle_home_user=$(isabelle env bash -c 'echo $ISABELLE_HOME_USER')
         mkdir -p $isabelle_home_user/etc
-        ln -s ${preferences} $isabelle_home_user/etc/preferences
+        ln -s ${preferences 600} $isabelle_home_user/etc/preferences
       }
       lang_setup() {
         isabelle ghc_setup
