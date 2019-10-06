@@ -27,10 +27,9 @@ let
     ML_system_64 = true
     smt_timeout = 600
   '';
-    # timeout = 1048576
-    # timeout_scale = 1048576.0
+    # TODO timeout and timeout_scale
 
-  mk_simple_test = name: cmd: runCommandCC "isabelle-test-${name}" {
+  mkSimpleTest = name: cmd: runCommandCC "isabelle-test-${name}" {
     nativeBuildInputs = [
       isabelle
       perl hostname unzip
@@ -54,30 +53,34 @@ let
     touch $out
   '';
 
-  build = "isabelle build"; # -v -j $NIX_BUILD_CORES
+  build = "isabelle build";
 
 in {
 
-  inherit mk_simple_test afp_src;
+  inherit mkSimpleTest afp_src;
 
-  lib = mk_simple_test "lib" ''
+  lib = mkSimpleTest "lib" ''
     ${build} -a
   '';
 
-  libs = sessions: mk_simple_test "libs" ''
+  libs = sessions: mkSimpleTest "libs" ''
     ${build} ${lib.concatStringsSep " " sessions}
   '';
 
-  libx = sessions: mk_simple_test "libx" ''
+  libx = sessions: mkSimpleTest "libx" ''
     ${build} -a ${lib.concatMapStringsSep " " (x: "-x ${x}") sessions}
   '';
 
-  afp = mk_simple_test "afp" ''
-    ${build} -d ${afp_src}/thys -g AFP
+  afp = mkSimpleTest "afp" ''
+    ${build} -d ${afp_src}/thys -a
   '';
 
-  afps = sessions: mk_simple_test "afps" ''
+  afps = sessions: mkSimpleTest "afps" ''
     ${build} -d ${afp_src}/thys ${lib.concatStringsSep " " sessions}
+  '';
+
+  afpx = sessions: mkSimpleTest "afpx" ''
+    ${build} -d ${afp_src}/thys -a ${lib.concatMapStringsSep " " (x: "-x ${x}") sessions}
   '';
 
   shell = mkShell {
@@ -99,11 +102,11 @@ in {
         mkdir -p $isabelle_home_user/etc
         ln -s ${preferences} $isabelle_home_user/etc/preferences
       }
+      lang_setup() {
+        isabelle ghc_setup
+        isabelle ocaml_setup
+      }
     '';
-      # clean() {
-      # }
-      # isabelle ghc_setup
-      # isabelle ocaml_setup
   };
 
 }
