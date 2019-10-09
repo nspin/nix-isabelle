@@ -37,11 +37,9 @@ $ nix-shell -A tests.shell
 
 ### Status
 
-I've built the entire [Archive of Formal Proofs](https://www.isa-afp.org/) except for three sessions (`Native_Word` due to lack of memory, and `Projective_Geometry` and `Iptables_Semantics_Examples_Big` for unknown reasons) on `x86_64-linux` using this package.
-I've also built all sessions that ship with Isabelle on `x86_64-darwin` using this package.
-I expect AFP would build on Darwin with equal success as on Linux, but I haven't yet had the chance to test it.
+I've built the entire [Archive of Formal Proofs](https://www.isa-afp.org/) except for three sessions (`Native_Word` due to lack of memory, and `Projective_Geometry` and `Iptables_Semantics_Examples_Big` for unknown reasons) on `x86_64-linux` and `x86_64-darwin` using this package.
 
-Success on `aarch64-linux` has been limited by some components' issues on `aarch64`.  Perhaps most importantly, it seems that PolyML's codegen for aarch64 may not have received the same optimization treatment as that for x86. Also, versions of Z3 ranging from 4.4.0 to 4.8.5 (current at time of writing) hang or segfault on some Isabelle-generated SMT. However, all else seems to working fine for basis use.
+Success on `aarch64-linux` has been limited by some components' support for `aarch64`. Perhaps most importantly, it seems that PolyML's codegen for aarch64 may not have received the same optimization treatment as that for x86. Also, versions of Z3 ranging from 4.4.0 to 4.8.5 (current at time of writing) hang or segfault on some Isabelle-generated SMT. However, all else seems to working fine for basic use.
 
 I have not tested this package on `x86_64-*bsd`. However, this work is at the very least a good starting point for an Isabelle distribution for a BSD.
 
