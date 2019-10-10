@@ -27,7 +27,7 @@ stdenv.mkDerivation rec {
   ];
 
   buildInputs = [ menhir ] ++ (with ocamlPackages; [
-    containers sequence num qcheck ounit
+    containers iter num qcheck ounit
   ]);
 
   preInstall = "

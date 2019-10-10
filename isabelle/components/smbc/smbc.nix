@@ -18,7 +18,7 @@ stdenv.mkDerivation rec {
   ];
 
   buildInputs = with ocamlPackages; [
-    containers sequence menhir
+    containers iter menhir
     msat tip-parser
   ];
 
