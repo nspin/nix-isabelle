@@ -2,7 +2,7 @@
 
 let
   smbc = callPackage ./smbc.nix {
-    inherit msat tip-parser;
+    inherit msat tip-parser sequence;
   };
 
   dolmen_0_4 = callPackage ./dolmen.nix {};
@@ -10,6 +10,10 @@ let
     inherit dolmen_0_4;
   };
   tip-parser = callPackage ./tip-parser.nix {};
+  ocamlPackages = callPackage ({ ocamlPackages }: ocamlPackages) {};
+  sequence = callPackage ./sequence.nix {
+    inherit (ocamlPackages) buildDunePackage qtest result;
+  };
 
 in
 mkComponent {

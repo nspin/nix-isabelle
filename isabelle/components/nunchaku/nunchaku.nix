@@ -1,5 +1,5 @@
 { stdenv, buildPlatform, fetchgit, ocamlPackages
-, menhir
+, menhir, sequence
 }:
 
 stdenv.mkDerivation rec {
@@ -27,7 +27,7 @@ stdenv.mkDerivation rec {
   ];
 
   buildInputs = [ menhir ] ++ (with ocamlPackages; [
-    containers iter num qcheck ounit
+    containers sequence num qcheck ounit
   ]);
 
   preInstall = "

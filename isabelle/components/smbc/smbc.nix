@@ -1,5 +1,5 @@
 { stdenv, fetchFromGitHub, ocamlPackages, git
-, msat, tip-parser
+, sequence, msat, tip-parser
 }:
 
 stdenv.mkDerivation rec {
@@ -13,13 +13,17 @@ stdenv.mkDerivation rec {
     sha256 = "1bh49j1balqms8yqkchj0l472nbfwnl3bvsy8z9lz928wv9vpx5q";
   };
 
+  patches = [
+    ./containers-bump.patch
+  ];
+
   nativeBuildInputs = with ocamlPackages; [
     ocaml ocamlbuild findlib git
   ];
 
   buildInputs = with ocamlPackages; [
-    containers iter menhir
-    msat tip-parser
+    containers menhir
+    sequence msat tip-parser
   ];
 
   preInstall = "
