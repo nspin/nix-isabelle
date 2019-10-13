@@ -1,5 +1,9 @@
-{ mkComponent, z3 }:
+{ mkComponent, callPackage }:
 
+let
+  z3 = callPackage ./z3.nix {};
+
+in
 mkComponent {
   inherit (z3) name;
   settings = ''
@@ -8,4 +12,7 @@ mkComponent {
     Z3_SOLVER=${z3}/bin/z3
     Z3_INSTALLED=yes
   '';
+  passthru = {
+    inherit z3;
+  };
 }
