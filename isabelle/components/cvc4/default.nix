@@ -1,11 +1,6 @@
-{ mkComponent, callPackage, runCommand }:
+{ mkComponent, runCommand, cvc4 }:
 
 let
-  cvc4 = callPackage ./cvc4.nix {
-    inherit libantlr3c;
-  };
-  libantlr3c = callPackage ./libantlr.nix {};
-
   home = runCommand "cvc4-home" {} ''
     mkdir $out
     ln -s ${cvc4}/bin/* $out
@@ -13,6 +8,9 @@ let
   '';
 
 in
+
+assert cvc4.version == "1.6";
+
 mkComponent {
   inherit (cvc4) name;
   settings = ''
