@@ -1,9 +1,13 @@
-{ mkComponent, stdenv, lib, callPackage, runCommand, hostPlatform }:
-
-with lib;
+{ mkComponent, stdenv, lib, callPackage, runCommand, hostPlatform, polyml }:
 
 let
-  polyml = callPackage ./polyml.nix {};
+  polyml_ = polyml;
+in
+let
+  polyml = lib.overrideDerivation polyml_ (attrs: {
+    configureFlags = attrs.configureFlags ++ [ "--enable-intinf-as-int" ];
+  });
+
   sha1 = callPackage ./sha1.nix {};
 
   ml_home = runCommand "ml-home" {} ''
@@ -35,6 +39,7 @@ mkComponent {
     POLYML_HOME=${polyml_home}
     ML_PLATFORM=${hostPlatform.config}
     ML_SYSTEM=${polyml.name}
+    ML_SYSTEM_64=true
     ML_HOME=${ml_home}
     ML_SOURCES=${source}
     ML_OPTIONS="--minheap 1000"
